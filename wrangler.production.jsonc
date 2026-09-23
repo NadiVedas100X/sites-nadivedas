@@ -12,5 +12,21 @@
     "directory": "dist/client",
     "binding": "ASSETS"
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nadi-website-production",
+      "database_id": "9a752e84-2bab-431b-b438-354acf512d99"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "THUMBPRINTS",
+      "bucket_name": "nadi-website-thumbprints"
+    }
+  ],
+  "vars": {
+    "STATEFUL_API_MODE": "bridge"
+  },
   "observability": { "enabled": true }
 }

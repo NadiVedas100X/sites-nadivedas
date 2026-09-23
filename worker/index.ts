@@ -4,6 +4,8 @@ import handler from "vinext/server/app-router-entry";
 interface Env {
   ASSETS: Fetcher;
   DB: D1Database;
+  THUMBPRINTS: R2Bucket;
+  STATEFUL_API_MODE?: "bridge" | "native";
   IMAGES: {
     input(stream: ReadableStream): {
       transform(options: Record<string, unknown>): {
@@ -28,12 +30,10 @@ const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
-    // Until the production D1/R2 data and provider secrets are migrated into
-    // this Cloudflare account, keep all stateful operations on the proven live
-    // backend. The browser still talks to the current host, so cookies and
-    // same-origin flows continue to work while every page and asset is served
-    // from this GitHub-managed deployment.
-    if (url.pathname.startsWith("/api/") || url.pathname === "/_vinext/image") {
+    // Keep the bridge switch explicit so migration traffic can be cut over only
+    // after D1, R2, payment credentials and CRM delivery pass end-to-end tests.
+    // In native mode every API executes in this GitHub-managed Worker.
+    if (env.STATEFUL_API_MODE !== "native" && (url.pathname.startsWith("/api/") || url.pathname === "/_vinext/image")) {
       const backendUrl = new URL(url.pathname + url.search, "https://www.nadivedas.com");
       const headers = new Headers(request.headers);
       headers.set("host", backendUrl.host);
