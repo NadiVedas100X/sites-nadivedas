@@ -1,0 +1,4 @@
+'use client';
+import {useState} from 'react';
+import type {ReviewStory} from '../../../lib/review-blogs';
+export default function ReviewVideo({story}:{story:ReviewStory}){const [playing,setPlaying]=useState(false);return <figure className="review-story-video"><div>{playing?<iframe src={story.playbackUrl} title={`${story.name} — original NadiVedas review`} allow="autoplay; fullscreen; picture-in-picture" allowFullScreen/>:<><img src={story.posterUrl} alt={story.name} loading="lazy"/><button onClick={()=>setPlaying(true)} aria-label={`Play ${story.name}'s original review`}><span aria-hidden="true">▶</span>Watch {story.name}'s story</button></>}</div><figcaption><strong>{story.name}</strong>{story.role&&<span>{story.role}</span>}<small>Original NadiVedas testimonial</small></figcaption></figure>}

@@ -1,0 +1,24 @@
+(()=>{
+  if(document.getElementById("nv-shiva-chatbot"))return;
+  const root=document.createElement("div");
+  root.id="nv-shiva-chatbot";
+  root.innerHTML=`<div class="nv-shiva-chatbot-launch-wrap"><button class="nv-shiva-chatbot-launch" type="button" aria-label="Chat with Nadi Vedas"><span><img src="/images/siddha-sages.png" alt="" /></span><b>Ask Priya</b><i></i></button><button class="nv-shiva-chatbot-minimize" type="button" aria-label="Minimize Priya chat">×</button></div><section class="nv-shiva-chatbot-panel" hidden><button class="nv-shiva-chatbot-close" type="button" aria-label="Close chat">×</button><iframe title="Nadi Vedas website guide" loading="eager" src="/chat-widget?source=%2Fshiva-nadi"></iframe></section>`;
+  const style=document.createElement("style");
+  style.textContent=`#nv-shiva-chatbot{position:fixed;right:20px;bottom:18px;z-index:99999;font-family:Arial,sans-serif}.nv-shiva-chatbot-launch-wrap{position:relative}.nv-shiva-chatbot-minimize{position:absolute;right:-5px;top:-9px;width:24px;height:24px;border:2px solid #fff;border-radius:50%;background:#343434;color:#fff;font-size:17px;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 12px #0004}.nv-shiva-chatbot-launch{border:0;border-radius:999px;background:linear-gradient(135deg,#075e54,#128c7e);color:#fff;padding:8px 16px 8px 8px;display:flex;align-items:center;gap:9px;box-shadow:0 10px 35px #073f3855;cursor:pointer}.nv-shiva-chatbot-launch.compact{width:58px;height:58px;padding:6px;border-radius:50%;gap:0;touch-action:none;cursor:grab;position:relative}.nv-shiva-chatbot-launch.compact b{display:none}.nv-shiva-chatbot-launch.compact span{width:46px;height:46px}.nv-shiva-chatbot-launch.compact i{position:absolute;right:4px;bottom:5px;width:10px;height:10px;border:2px solid #fff}.nv-shiva-chatbot-launch span{width:40px;height:40px;border-radius:50%;overflow:hidden;background:#edce86;display:block}.nv-shiva-chatbot-launch img{width:100%;height:100%;object-fit:cover}.nv-shiva-chatbot-launch i{width:7px;height:7px;border-radius:50%;background:#25d366}.nv-shiva-chatbot-panel{position:relative;width:min(390px,calc(100vw - 24px));height:min(650px,calc(100vh - 30px));border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 18px 65px #16362f55}.nv-shiva-chatbot-panel iframe{width:100%;height:100%;border:0;display:block}.nv-shiva-chatbot-close{position:absolute;right:12px;top:10px;z-index:3;width:34px;height:34px;border:0;background:transparent;color:#fff;font-size:26px;cursor:pointer}.nv-shiva-chatbot-panel[hidden]{display:none}@media(max-width:600px){#nv-shiva-chatbot{right:12px;bottom:calc(92px + env(safe-area-inset-bottom))}.nv-shiva-chatbot-panel{width:calc(100vw - 24px);height:calc(100dvh - 110px)}.nv-shiva-chatbot-minimize{right:-3px;top:-8px}}`;
+  document.head.appendChild(style);
+  document.body.appendChild(root);
+  const launch=root.querySelector(".nv-shiva-chatbot-launch");
+  const launchWrap=root.querySelector(".nv-shiva-chatbot-launch-wrap");
+  const minimize=root.querySelector(".nv-shiva-chatbot-minimize");
+  const panel=root.querySelector(".nv-shiva-chatbot-panel");
+  let drag=null,suppressClick=false;
+  const makeCompact=()=>{panel.hidden=true;launchWrap.hidden=false;launch.classList.add("compact");minimize.hidden=true;localStorage.setItem("nadivedas:chat:minimized","1")};
+  const openPanel=()=>{launchWrap.hidden=true;panel.hidden=false;launch.classList.remove("compact");localStorage.removeItem("nadivedas:chat:minimized")};
+  root.querySelector(".nv-shiva-chatbot-close").addEventListener("click",makeCompact);
+  minimize.addEventListener("click",makeCompact);
+  launch.addEventListener("click",()=>{if(suppressClick){suppressClick=false;return}openPanel()});
+  launch.addEventListener("pointerdown",event=>{if(!launch.classList.contains("compact")||(event.pointerType==="mouse"&&event.button!==0))return;const rect=launch.getBoundingClientRect();drag={startX:event.clientX,startY:event.clientY,originX:rect.left,originY:rect.top,moved:false};launch.setPointerCapture(event.pointerId)});
+  launch.addEventListener("pointermove",event=>{if(!drag)return;const dx=event.clientX-drag.startX,dy=event.clientY-drag.startY;if(Math.abs(dx)+Math.abs(dy)>6)drag.moved=true;root.style.left=`${Math.max(8,Math.min(innerWidth-66,drag.originX+dx))}px`;root.style.top=`${Math.max(8,Math.min(innerHeight-66,drag.originY+dy))}px`;root.style.right="auto";root.style.bottom="auto"});
+  const finishDrag=()=>{if(drag?.moved)suppressClick=true;drag=null};launch.addEventListener("pointerup",finishDrag);launch.addEventListener("pointercancel",finishDrag);
+  if(localStorage.getItem("nadivedas:chat:minimized")==="1")makeCompact();
+})();

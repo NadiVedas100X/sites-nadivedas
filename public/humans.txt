@@ -1,0 +1,12 @@
+/* NadiVedas */
+
+Site: NadiVedas
+Website: https://www.nadivedas.com
+Build: Custom-designed and custom-coded for the NadiVedas experience.
+Focus: Nadi astrology education, leaf-finding, and seeker guidance.
+
+/* Standards */
+
+Language: English
+Accessibility: Responsive, keyboard-friendly interfaces
+Technology: Standards-based HTML, CSS, TypeScript, and server-side services

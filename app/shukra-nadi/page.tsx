@@ -1,0 +1,1 @@
+import {LineageLanding,lineageMetadata} from "../components/LineageLanding";import {lineageBySlug} from "../lib/lineage-pages";const page=lineageBySlug["shukra-nadi"];export const metadata=lineageMetadata(page);export default function Page(){return <LineageLanding page={page}/>}

@@ -1,0 +1,3 @@
+export type ReviewStory={sourceId:string;name:string;role:string;heading:string;paragraphs:string[];posterUrl:string;playbackUrl:string};
+export type ReviewBlog={slug:string;title:string;description:string;theme:string;intro:string[];conclusion:string[];stories:ReviewStory[];date:string;wordCount:number};
+export async function getReviewBlogs():Promise<{articles:ReviewBlog[];unavailable:boolean}>{try{const r=await fetch('https://poojacrm.nadivedas.com/api/review-blogs?public=1',{signal:AbortSignal.timeout(12000),next:{revalidate:60}});if(!r.ok)throw new Error('Unavailable');const p=await r.json();return{articles:Array.isArray(p.articles)?p.articles:[],unavailable:false}}catch{return{articles:[],unavailable:true}}}
