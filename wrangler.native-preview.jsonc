@@ -26,7 +26,8 @@
     }
   ],
   "vars": {
-    "STATEFUL_API_MODE": "native"
+    "STATEFUL_API_MODE": "native",
+    "PAYU_MODE": "live"
   },
   "observability": { "enabled": true }
 }

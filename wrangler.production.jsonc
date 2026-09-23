@@ -26,7 +26,8 @@
     }
   ],
   "vars": {
-    "STATEFUL_API_MODE": "bridge"
+    "STATEFUL_API_MODE": "bridge",
+    "PAYU_MODE": "live"
   },
   "observability": { "enabled": true }
 }
