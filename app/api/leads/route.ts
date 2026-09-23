@@ -31,6 +31,12 @@ async function ready(){
     ["payment_currency","ALTER TABLE leads ADD COLUMN payment_currency TEXT"],
     ["refund_requested","ALTER TABLE leads ADD COLUMN refund_requested INTEGER NOT NULL DEFAULT 0"],
     ["refund_status","ALTER TABLE leads ADD COLUMN refund_status TEXT"],
+    ["session_selected_at","ALTER TABLE leads ADD COLUMN session_selected_at INTEGER"],
+    ["followup_consent","ALTER TABLE leads ADD COLUMN followup_consent INTEGER NOT NULL DEFAULT 0"],
+    ["consent_at","ALTER TABLE leads ADD COLUMN consent_at INTEGER"],
+    ["visitor_id","ALTER TABLE leads ADD COLUMN visitor_id TEXT NOT NULL DEFAULT ''"],
+    ["state","ALTER TABLE leads ADD COLUMN state TEXT NOT NULL DEFAULT ''"],
+    ["country","ALTER TABLE leads ADD COLUMN country TEXT NOT NULL DEFAULT ''"],
   ] as const;
   const existing=columns.length?[]:[env.DB.prepare(`CREATE TABLE IF NOT EXISTS leads (
     id TEXT PRIMARY KEY, referral_token TEXT, initial_interest TEXT, nadi_decided INTEGER NOT NULL DEFAULT 0, name TEXT NOT NULL, email TEXT NOT NULL, whatsapp TEXT NOT NULL,
