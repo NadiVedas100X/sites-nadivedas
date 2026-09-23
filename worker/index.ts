@@ -1,5 +1,4 @@
 /** Cloudflare Worker entry point for the vinext-starter template. */
-import { handleImageOptimization, DEFAULT_DEVICE_SIZES, DEFAULT_IMAGE_SIZES } from "vinext/server/image-optimization";
 import handler from "vinext/server/app-router-entry";
 
 interface Env {
@@ -29,6 +28,19 @@ const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
+    // Until the production D1/R2 data and provider secrets are migrated into
+    // this Cloudflare account, keep all stateful operations on the proven live
+    // backend. The browser still talks to the current host, so cookies and
+    // same-origin flows continue to work while every page and asset is served
+    // from this GitHub-managed deployment.
+    if (url.pathname.startsWith("/api/") || url.pathname === "/_vinext/image") {
+      const backendUrl = new URL(url.pathname + url.search, "https://www.nadivedas.com");
+      const headers = new Headers(request.headers);
+      headers.set("host", backendUrl.host);
+      headers.set("x-forwarded-host", url.host);
+      return fetch(new Request(backendUrl, { method: request.method, headers, body: request.body, redirect: "manual" }));
+    }
+
     // Keep a single canonical host. Serving both the apex and www hosts with a
     // 200 response caused search engines to cache different favicon identities.
     if (url.hostname === "nadivedas.com") {
@@ -56,17 +68,6 @@ const worker = {
         .on("head",{element(element){element.append('<script src="/geo-pricing.js"></script>',{html:true})}})
         .on("body",{element(element){element.append('<script src="/shiva-chatbot.js"></script>',{html:true})}})
         .transform(page);
-    }
-
-    if (url.pathname === "/_vinext/image") {
-      const allowedWidths = [...DEFAULT_DEVICE_SIZES, ...DEFAULT_IMAGE_SIZES];
-      return handleImageOptimization(request, {
-        fetchAsset: (path) => env.ASSETS.fetch(new Request(new URL(path, request.url))),
-        transformImage: async (body, { width, format, quality }) => {
-          const result = await env.IMAGES.input(body).transform(width > 0 ? { width } : {}).output({ format, quality });
-          return result.response();
-        },
-      }, allowedWidths);
     }
 
     return handler.fetch(request, env, ctx);
